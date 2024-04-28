@@ -62,7 +62,6 @@ const WeatherIndicator = GObject.registerClass({
                 xExpand: true,
                 yAlign: Clutter.ActorAlign.CENTER,
             });
-            return;
         } else {
             icon = new St.Icon({
                 icon_name: this._weather.iconStr(),
