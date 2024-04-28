@@ -82,7 +82,7 @@ export default class Weather {
     // TODO Get location from Geoclue
     #LAT = '49.199';
     #LON = '16.598';
-    #KEY = '518220cbd973593ae8ea8dd3dd04f2f9';
+    #KEY = GLib.getenv('WEATHER_API_KEY') ?? '';
     #API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${this.#LAT}&lon=${this.#LON}&appid=${this.#KEY}&units=metric`;
 
     /**
