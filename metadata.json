@@ -1,0 +1,9 @@
+{
+  "name": "Weather GNOME Shell extension",
+  "description": "Shows what's the weather like outside on the top panel",
+  "uuid": "weather@matejbuocik",
+  "shell-version": [
+    "45"
+  ],
+  "settings-schema": "org.gnome.shell.extensions.weather"
+}
