@@ -105,6 +105,45 @@ const WeatherIndicator = GObject.registerClass({
         );
     }
 
+    _positionInPanel() {
+        let alignment = '';
+        let gravity = 0;
+        let arrow_pos = 0;
+
+        switch (this._settings.get_int('position-in-panel')) {
+            case 0: // left
+                alignment = 'left';
+                gravity = -1;
+                arrow_pos = 1;
+                break;
+            case 1: // center
+                alignment = 'center';
+                gravity = -1;
+                arrow_pos = 0.5;
+                break;
+            case 2: // right
+                alignment = 'right';
+                gravity = 0;
+                arrow_pos = 0;
+                break;
+            case 3: // far left
+                alignment = 'left';
+                gravity = 0;
+                arrow_pos = 1;
+                break;
+            case 4: // far right
+                alignment = 'right';
+                gravity = -1;
+                arrow_pos = 0;
+                break;
+        }
+
+        // set arrow position when initializing and moving
+        this.menu._arrowAlignment = arrow_pos;
+
+        return [gravity, alignment];
+    }
+
     _destroyTimer() {
         if (this._weatherTimer !== null) {
             GLib.Source.remove(this._weatherTimer);
@@ -121,7 +160,8 @@ const WeatherIndicator = GObject.registerClass({
 export default class WeatherExtension extends Extension {
     enable() {
         this._weatherIndicator = new WeatherIndicator(this);
-        Main.panel.addToStatusArea(this.uuid, this._weatherIndicator);
+        const [position, box] = this._weatherIndicator._positionInPanel();
+        Main.panel.addToStatusArea(this.uuid, this._weatherIndicator, position, box);
     }
 
     disable() {
