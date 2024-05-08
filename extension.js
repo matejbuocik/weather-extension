@@ -18,6 +18,7 @@ const WeatherIndicator = GObject.registerClass({
 
         this._extensionObject = extensionObject;
         this._settings = extensionObject.getSettings();
+        this._settings.connect('changed::position-in-panel', this._positionInPanelChanged.bind(this));
 
         this._menuLayout = new St.BoxLayout({
             vertical: false,
@@ -89,7 +90,6 @@ const WeatherIndicator = GObject.registerClass({
 
     _initializeMenu() {
         // TODO Show weather details
-        // TODO Implement preferences
         const preferences = new PopupMenu.PopupMenuItem(_('Preferences'));
         preferences.connect('activate', () => {
             this.menu._getTopMenu().close();
@@ -162,6 +162,21 @@ const WeatherIndicator = GObject.registerClass({
         this.menu._arrowAlignment = arrow_pos;
 
         return [gravity, alignment];
+    }
+
+    _positionInPanelChanged() {
+        this.container.get_parent().remove_child(this.container);
+        let position = this._positionInPanel();
+
+        // allows easily addressable boxes
+        let boxes = {
+            left: Main.panel._leftBox,
+            center: Main.panel._centerBox,
+            right: Main.panel._rightBox
+        };
+
+        // update position when changed from preferences
+        boxes[position[1]].insert_child_at_index(this.container, position[0]);
     }
 
     _destroyTimer() {

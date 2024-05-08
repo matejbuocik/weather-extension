@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0" />
+  <requires lib="Adw" version="1.0" />
+  <object class="AdwPreferencesPage" id="preferences-page">
+    <child>
+      <object class="AdwPreferencesGroup">
+        <property name="title">Appearance</property>
+        <property name="description">Configure the appearance of the extension</property>
+        <child>
+          <object class="AdwComboRow" id="position-in-panel">
+            <property name="title">Position in Panel</property>
+            <property name="subtitle">Where should the icon be</property>
+            <property name="model">
+              <object class="GtkStringList">
+                <items>
+                  <item translatable="yes">Left</item>
+                  <item translatable="yes">Center</item>
+                  <item translatable="yes">Right</item>
+                  <item translatable="yes">Far Left</item>
+                  <item translatable="yes">Far Right</item>
+                </items>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
