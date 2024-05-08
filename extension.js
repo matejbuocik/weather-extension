@@ -37,8 +37,8 @@ const WeatherIndicator = GObject.registerClass({
 
         this.draw();
         this._initializeMenu();
-        this._weather.query(() => this.draw());
-        this._initializeWeatherTimer();
+        this._queryWeather();
+        this._initializeTimer();
     }
 
     draw() {
@@ -83,7 +83,12 @@ const WeatherIndicator = GObject.registerClass({
         this._menuLayout.add_child(tempLabel);
     }
 
+    _queryWeather() {
+        this._weather.query(() => this.draw())
+    }
+
     _initializeMenu() {
+        // TODO Show weather details
         // TODO Implement preferences
         const preferences = new PopupMenu.PopupMenuItem(_('Preferences'));
         preferences.connect('activate', () => {
@@ -91,18 +96,33 @@ const WeatherIndicator = GObject.registerClass({
             this._extensionObject.openPreferences();
         });
         this.menu.addMenuItem(preferences);
+
+        this._menuStateChange = this.menu.connect('open-state-changed', (self, isOpen) => {
+            if (isOpen) {
+                // query weather
+                this._queryWeather();
+
+                // reinitialize timer
+                this._updateTimer();
+            }
+        })
     }
 
-    _initializeWeatherTimer() {
+    _initializeTimer() {
         const updateTime = this._settings.get_int('update-time');
         this._weatherTimer = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             updateTime,
             () => {
-                this._weather.query(() => this.draw());
+                this._queryWeather();
                 return GLib.SOURCE_CONTINUE;
             }
         );
+    }
+
+    _updateTimer() {
+        this._destroyTimer();
+        this._initializeTimer();
     }
 
     _positionInPanel() {
