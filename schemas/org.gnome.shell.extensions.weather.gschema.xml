@@ -11,5 +11,10 @@
       <summary>Seconds between updates</summary>
       <description>Delay between querying the Weather API</description>
     </key>
+    <key type="s" name="api-key">
+      <default>""</default>
+      <summary>Weather API key</summary>
+      <description>Key to use when querying the openweathermap.org API</description>
+    </key>
   </schema>
 </schemalist>

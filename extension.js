@@ -2,6 +2,7 @@ import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
+import Geoclue from 'gi://Geoclue';
 
 import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -19,6 +20,10 @@ const WeatherIndicator = GObject.registerClass({
         this._extensionObject = extensionObject;
         this._settings = extensionObject.getSettings();
         this._settings.connect('changed::position-in-panel', this._positionInPanelChanged.bind(this));
+        this._settings.connect('changed::api-key', () => {
+            this._queryWeather();
+            this._updateTimer();
+        });
 
         this._menuLayout = new St.BoxLayout({
             vertical: false,
@@ -85,7 +90,20 @@ const WeatherIndicator = GObject.registerClass({
     }
 
     _queryWeather() {
-        this._weather.query(() => this.draw())
+        const apiKey = this._settings.get_string('api-key');
+        if (!apiKey) {
+            Main.notify(_('Weather extension', 'Please set the API key'))
+            this._extensionObject.openPreferences();
+            return;
+        }
+
+        Main.notify('Querying now');
+
+        // TODO Get location from Geoclue
+        const lat = 49.199;
+        const lon = 16.598;
+
+        this._weather.query(lat, lon, apiKey, this.draw.bind(this))
     }
 
     _initializeMenu() {

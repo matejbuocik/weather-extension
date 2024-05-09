@@ -1,7 +1,5 @@
 import GLib from 'gi://GLib';
-import Geoclue from 'gi://Geoclue';
 import Soup from 'gi://Soup';
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 /*
 type WeatherAPIData = {
@@ -79,11 +77,6 @@ export default class Weather {
         'Windy': 'windy',
         'Alert': 'severe-alert',
     };
-    // TODO Get location from Geoclue
-    #LAT = '49.199';
-    #LON = '16.598';
-    #KEY = GLib.getenv('WEATHER_API_KEY') ?? '';
-    #API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${this.#LAT}&lon=${this.#LON}&appid=${this.#KEY}&units=metric`;
 
     /**
      * Get Gnome weather icon name.
@@ -107,21 +100,27 @@ export default class Weather {
      * @returns string of current temperature
      */
     temperatureStr() {
-        return `${Math.round(this.#data.main.temp)} °C`;
+        return `${Math.round(this.#data.main.temp)}°C`;
     }
 
     /**
      * Query the Weather API.
+     * @param lat latitude to query for
+     * @param lon longitude to query for
+     * @param apiKey openweathermap.org API key
      * @param finalFunc optional function to call after the data is ready
      */
-    query(finalFunc = null) {
-        // Main.notify(_('querying'));
-        const message = Soup.Message.new('GET', this.#API_URL);
+    query(lat, lon, apiKey, finalFunc = null) {
+        const apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+        const message = Soup.Message.new('GET', apiURL);
+        // TODO Add API call counter
         this.#soupSession.send_and_read_async(
             message,
             GLib.PRIORITY_DEFAULT,
             null,
             (session, result) => {
+                // TODO What if fails
                 if (message.get_status() === Soup.Status.OK) {
                     const bytes = session.send_and_read_finish(result);
                     const decoder = new TextDecoder('utf-8');
@@ -134,10 +133,14 @@ export default class Weather {
     }
 
     /**
-     * Check that the object has weather #data.
+     * Check that the object has weather data.
      * @returns True if has data from API
      */
     gotData() {
         return this.#data !== null;
     }
+
+    // TODO Get current city
+
+    // TODO Get weather description
 }

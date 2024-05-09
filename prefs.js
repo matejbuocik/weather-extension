@@ -17,6 +17,14 @@ export default class ExamplePreferences extends ExtensionPreferences {
     settings.bind('position-in-panel', position, 'selected',
       Gio.SettingsBindFlags.DEFAULT);
 
-    // TODO Weather API Key
+    const apiKey = builder.get_object('api-key');
+    const currentKey = settings.get_string('api-key')
+    apiKey.set_text(currentKey)
+    apiKey.connect('apply', (widget) => {
+      const text = widget.get_text();
+      if (text && text !== currentKey) {
+        settings.set_string('api-key', text);
+      }
+    });
   }
 }
