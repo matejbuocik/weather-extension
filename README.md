@@ -1,6 +1,12 @@
 # weather@matejbuocik
 
-Shows what's the weather like outside on the top panel.
+Shows what's the weather like outside on the top panel.  
+![screenshot](https://github.com/user-attachments/assets/2f07dc09-c709-4635-b7d4-c27a4096778c)
+
+## Install
+1. Clone the repo into `~/.local/share/gnome-shell/extensions/weather@matejbuocik`
+2. On Wayland logout and log back in. On X11 press alt+f2, type r and enter.
+3. `gnome-extensions enable weather@matejbuocik`
 
 ## Setup
 To use Weather API an [OpenWeather API](https://openweathermap.org/api) key must be set in the extension's preferences.
