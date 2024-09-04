@@ -97,8 +97,6 @@ const WeatherIndicator = GObject.registerClass({
             return;
         }
 
-        Main.notify('Querying now');
-
         // TODO Get location from Geoclue
         const lat = 49.199;
         const lon = 16.598;
